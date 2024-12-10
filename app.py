@@ -129,14 +129,22 @@ def admin_dashboard():
         return redirect(url_for('login'))
     
     with get_db_connection() as conn:
-        employees = conn.execute('SELECT * FROM employees').fetchall()
-        schedules = conn.execute('''
+        employees = conn.execute('SELECT * FROM employees').fetchall()  # Get employees from the database
+        schedules = conn.execute(''' 
             SELECT schedules.id, employees.name, schedules.date, schedules.start_time, schedules.end_time, schedules.task
             FROM schedules
             JOIN employees ON schedules.employee_id = employees.id
-        ''').fetchall()
+        ''').fetchall()  # Get schedules with employee names
     
     return render_template('admin_dashboard.html', employees=employees, schedules=schedules)
+
+@app.route('/api/get_employees', methods=['GET'])
+def api_get_employees():
+    with get_db_connection() as conn:
+        employees = conn.execute('SELECT * FROM employees').fetchall()  # Query the database to get employees
+        employees_list = [{'id': emp['id'], 'name': emp['name'], 'position': emp['position'], 'department': emp['department']} for emp in employees]
+    
+    return jsonify({'employees': employees_list})
 
 @app.route('/employee')
 def employee_dashboard():
@@ -269,12 +277,23 @@ def edit_schedule(schedule_id):
 def swap_shift():
     if session.get('role') != 'employee':
         return redirect(url_for('login'))
-    
+
     requester_id = session['user_id']
     requested_shift_id = request.form['requested_shift_id']
     target_shift_id = request.form['target_shift_id']
 
     with get_db_connection() as conn:
+        # Fetch details of both shifts
+        requested_shift = conn.execute('SELECT * FROM schedules WHERE id = ?', (requested_shift_id,)).fetchone()
+        target_shift = conn.execute('SELECT * FROM schedules WHERE id = ?', (target_shift_id,)).fetchone()
+
+        # Check for overlapping times
+        if (requested_shift and target_shift and
+                requested_shift['start_time'] < target_shift['end_time'] and
+                requested_shift['end_time'] > target_shift['start_time']):
+            return jsonify({'error': 'Shifts overlap and cannot be swapped.'}), 400
+
+        # Proceed with inserting the swap request
         conn.execute('''
             INSERT INTO shift_swaps (requester_id, requested_shift_id, target_shift_id, status)
             VALUES (?, ?, ?, 'pending')
