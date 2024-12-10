@@ -1,0 +1,15 @@
+<h2>Your Shift Swap Requests</h2>
+<table>
+    <tr>
+        <th>Requested Shift</th>
+        <th>Target Shift</th>
+        <th>Status</th>
+    </tr>
+    {% for request in requests %}
+    <tr>
+        <td>{{ request.requested_date }}</td>
+        <td>{{ request.target_date }}</td>
+        <td>{{ request.status }}</td>
+    </tr>
+    {% endfor %}
+</table>

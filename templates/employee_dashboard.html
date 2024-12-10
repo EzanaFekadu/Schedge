@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+    <!-- FullCalendar CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 text-gray-800">
+    <header class="bg-blue-600 text-white py-4">
+        <div class="container mx-auto flex justify-between items-center px-4">
+            <h1 class="text-lg font-bold">Welcome, {{ session.get('username', 'Employee') }}</h1>
+            <nav>
+                <a href="{{ url_for('logout') }}" class="text-white font-semibold hover:underline">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto mt-6 p-4 bg-white shadow-md rounded">
+        <h2 class="text-xl font-bold mb-4">Your Schedule</h2>
+
+        <!-- FullCalendar Container -->
+        <div id="calendar" class="border border-gray-300 rounded shadow-sm mb-6"></div>
+
+        <!-- Shift Swap Request -->
+        <h2 class="text-xl font-bold mb-4">Request a Shift Swap</h2>
+        <form action="{{ url_for('swap_shift') }}" method="POST" class="space-y-4">
+            <div>
+                <label for="requested_shift_id" class="block font-semibold">Your Shift:</label>
+                <select name="requested_shift_id" id="requested_shift_id" class="w-full p-2 border border-gray-300 rounded" required>
+                    {% for schedule in schedules %}
+                    <option value="{{ schedule.id }}">{{ schedule.date }} ({{ schedule.start_time }} - {{ schedule.end_time }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="target_shift_id" class="block font-semibold">Available Shifts:</label>
+                <select name="target_shift_id" id="target_shift_id" class="w-full p-2 border border-gray-300 rounded" required>
+                    {% for other_schedule in other_schedules %}
+                    <option value="{{ other_schedule.id }}">{{ other_schedule.date }} ({{ other_schedule.start_time }} - {{ other_schedule.end_time }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="bg-blue-600 text-white font-semibold py-2 px-4 rounded hover:bg-blue-700">
+                Request Swap
+            </button>
+        </form>
+    </main>
+
+    <footer class="text-center py-4">
+        <p>&copy; 2024 Employee Management System</p>
+    </footer>
+
+    <!-- FullCalendar JS -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var scheduleData = {{ schedules | tojson }};
+
+            // Format schedule data for FullCalendar
+            var events = scheduleData.map(function(schedule) {
+                return {
+                    title: schedule.task,
+                    start: schedule.date + 'T' + schedule.start_time,
+                    end: schedule.date + 'T' + schedule.end_time,
+                    extendedProps: {
+                        employeeName: schedule.employee_name,
+                        position: schedule.employee_position,
+                        department: schedule.employee_department
+                    }
+                };
+            });
+
+            // Initialize FullCalendar
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                events: events,
+                eventClick: function(info) {
+                    var event = info.event;
+                    alert(
+                        'Task: ' + event.title + '\n' +
+                        'Position: ' + event.extendedProps.position + '\n' +
+                        'Department: ' + event.extendedProps.department + '\n' +
+                        'Start: ' + event.start.toISOString() + '\n' +
+                        'End: ' + event.end.toISOString()
+                    );
+                }
+            });
+
+            calendar.render();
+        });
+    </script>
+</body>
+</html>

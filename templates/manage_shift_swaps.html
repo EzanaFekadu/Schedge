@@ -1,0 +1,24 @@
+<h2>Manage Shift Swaps</h2>
+<table>
+    <tr>
+        <th>Requester</th>
+        <th>Requested Shift</th>
+        <th>Target Shift</th>
+        <th>Status</th>
+        <th>Actions</th>
+    </tr>
+    {% for request in swap_requests %}
+    <tr>
+        <td>{{ request.requester }}</td>
+        <td>{{ request.requested_date }}</td>
+        <td>{{ request.target_date }}</td>
+        <td>{{ request.status }}</td>
+        <td>
+            <form action="{{ url_for('update_swap_status', swap_id=request.id) }}" method="POST">
+                <button type="submit" name="status" value="approved">Approve</button>
+                <button type="submit" name="status" value="declined">Decline</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>

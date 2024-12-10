@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedge - Landing Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 text-gray-800">
+    <header class="bg-blue-600 text-white py-4">
+        <div class="container mx-auto flex justify-between items-center px-4">
+            <h1 class="text-lg font-bold">Welcome to Schedge</h1>
+        </div>
+    </header>
+
+    <main class="container mx-auto mt-6 p-4 bg-white shadow-md rounded text-center">
+        <h2 class="text-xl font-bold mb-4">Simplify Employee Scheduling</h2>
+        <div class="flex justify-center space-x-4">
+            <a href="{{ url_for('login') }}" class="px-4 py-2 bg-blue-500 text-white rounded shadow hover:bg-blue-600">Login</a>
+            <a href="{{ url_for('signup') }}" class="px-4 py-2 bg-green-500 text-white rounded shadow hover:bg-green-600">Sign Up</a>
+        </div>
+    </main>
+</body>
+</html>
