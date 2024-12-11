@@ -10,6 +10,8 @@
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100 text-gray-800">
+
+    <!-- Header -->
     <header class="bg-blue-600 text-white py-4">
         <div class="container mx-auto flex justify-between items-center px-4">
             <h1 class="text-lg font-bold">Welcome, {{ session.get('username', 'Employee') }}</h1>
@@ -19,39 +21,47 @@
         </div>
     </header>
 
-    <main class="container mx-auto mt-6 p-4 bg-white shadow-md rounded">
-        <h2 class="text-xl font-bold mb-4">Your Schedule</h2>
+    <!-- Main Content -->
+    <main class="container mx-auto mt-6 p-6 bg-white shadow-md rounded-lg">
+        <h2 class="text-2xl font-semibold mb-6">Your Schedule</h2>
 
         <!-- FullCalendar Container -->
-        <div id="calendar" class="border border-gray-300 rounded shadow-sm mb-6"></div>
+        <div id="calendar" class="border border-gray-300 rounded-lg shadow-sm mb-6"></div>
 
-        <!-- Shift Swap Request -->
-        <h2 class="text-xl font-bold mb-4">Request a Shift Swap</h2>
-        <form action="{{ url_for('swap_shift') }}" method="POST" class="space-y-4">
+        <!-- Shift Swap Request Section -->
+        <h2 class="text-2xl font-semibold mb-6">Request a Shift Swap</h2>
+        <form action="{{ url_for('swap_shift') }}" method="POST" class="space-y-6">
+            
+            <!-- Requested Shift Dropdown -->
             <div>
-                <label for="requested_shift_id" class="block font-semibold">Your Shift:</label>
-                <select name="requested_shift_id" id="requested_shift_id" class="w-full p-2 border border-gray-300 rounded" required>
+                <label for="requested_shift_id" class="block font-semibold text-lg">Your Shift:</label>
+                <select name="requested_shift_id" id="requested_shift_id" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm" required>
                     {% for schedule in schedules %}
                     <option value="{{ schedule.id }}">{{ schedule.date }} ({{ schedule.start_time }} - {{ schedule.end_time }})</option>
                     {% endfor %}
                 </select>
             </div>
+
+            <!-- Target Shift Dropdown -->
             <div>
-                <label for="target_shift_id" class="block font-semibold">Available Shifts:</label>
-                <select name="target_shift_id" id="target_shift_id" class="w-full p-2 border border-gray-300 rounded" required>
+                <label for="target_shift_id" class="block font-semibold text-lg">Available Shifts:</label>
+                <select name="target_shift_id" id="target_shift_id" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm" required>
                     {% for other_schedule in other_schedules %}
                     <option value="{{ other_schedule.id }}">{{ other_schedule.date }} ({{ other_schedule.start_time }} - {{ other_schedule.end_time }})</option>
                     {% endfor %}
                 </select>
             </div>
-            <button type="submit" class="bg-blue-600 text-white font-semibold py-2 px-4 rounded hover:bg-blue-700">
+
+            <!-- Swap Button -->
+            <button type="submit" class="bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-blue-700 transition duration-200">
                 Request Swap
             </button>
         </form>
     </main>
 
-    <footer class="text-center py-4">
-        <p>&copy; 2024 Employee Management System</p>
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-4 mt-6">
+        <p class="text-center text-sm">&copy; 2024 Employee Management System</p>
     </footer>
 
     <!-- FullCalendar JS -->

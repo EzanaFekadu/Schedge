@@ -6,37 +6,65 @@
     <title>Edit Schedule</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <header>
-        <h1>Edit Schedule</h1>
-        <nav>
-            <a href="{{ url_for('admin_dashboard') }}">Back to Dashboard</a>
-        </nav>
+<body class="bg-gray-100 text-gray-800">
+    <header class="bg-blue-600 text-white py-4">
+        <div class="container mx-auto flex justify-between items-center px-4">
+            <h1 class="text-lg font-bold">Edit Schedule</h1>
+            <nav>
+                <a href="{{ url_for('admin_dashboard') }}" class="text-white font-semibold hover:underline">Back to Dashboard</a>
+            </nav>
+        </div>
     </header>
 
-    <div class="container">
-        <h2>Edit Schedule Details</h2>
-        <form action="{{ url_for('edit_schedule', schedule_id=schedule.id) }}" method="POST">
-            <label for="employee_id">Employee</label>
-            <select name="employee_id" required>
-                {% for employee in employees %}
-                <option value="{{ employee.id }}" {% if employee.id == schedule.employee_id %}selected{% endif %}>{{ employee.name }}</option>
-                {% endfor %}
-            </select>
-            
-            <label for="date">Date</label>
-            <input type="date" id="date" name="date" value="{{ schedule.date }}" required>
-            
-            <label for="start_time">Start Time</label>
-            <input type="time" id="start_time" name="start_time" value="{{ schedule.start_time }}" required>
-            
-            <label for="end_time">End Time</label>
-            <input type="time" id="end_time" name="end_time" value="{{ schedule.end_time }}" required>
-            
-            <label for="task">Task</label>
-            <input type="text" id="task" name="task" value="{{ schedule.task }}" required>
-            
-            <button type="submit">Update Schedule</button>
+    <div class="container mx-auto mt-6 p-6 bg-white shadow-md rounded">
+        <h2 class="text-xl font-bold mb-4">Edit Schedule Details</h2>
+        <form action="{{ url_for('edit_schedule', schedule_id=schedule.id) }}" method="POST" class="space-y-4">
+            <div>
+                <label for="employee_id" class="block text-sm font-semibold mb-1">Employee</label>
+                <select id="employee_id" name="employee_id" 
+                        class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                        required>
+                    {% for employee in employees %}
+                        <option value="{{ employee.id }}" {% if employee.id == schedule.employee_id %}selected{% endif %}>
+                            {{ employee.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="date" class="block text-sm font-semibold mb-1">Date</label>
+                <input type="date" id="date" name="date" value="{{ schedule.date }}" 
+                    class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                    required>
+            </div>
+            <div>
+                <label for="start_time" class="block text-sm font-semibold mb-1">Start Time</label>
+                <input type="time" id="start_time" name="start_time" value="{{ schedule.start_time }}" 
+                    class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                    required>
+            </div>
+            <div>
+                <label for="end_time" class="block text-sm font-semibold mb-1">End Time</label>
+                <input type="time" id="end_time" name="end_time" value="{{ schedule.end_time }}" 
+                    class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                    required>
+            </div>
+            <div>
+                <label for="task" class="block text-sm font-semibold mb-1">Task</label>
+                <input type="text" id="task" name="task" value="{{ schedule.task }}" 
+                    class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                    required>
+            </div>
+            <div class="flex justify-between items-center mt-4">
+                <button type="submit" 
+                        class="px-4 py-2 bg-blue-500 text-white rounded shadow hover:bg-blue-600">
+                    Update Schedule
+                </button>
+                <a href="{{ url_for('admin_dashboard') }}" 
+                class="px-4 py-2 bg-gray-300 text-gray-800 rounded shadow hover:bg-gray-400">
+                    Cancel
+                </a>
+            </div>
         </form>
     </div>
 </body>

@@ -151,23 +151,20 @@ def employee_dashboard():
     if session.get('role') != 'employee':
         return redirect(url_for('login'))
 
-    user_id = session.get('user_id')
-
+    user_id = session.get('user_id')  # Fetch logged-in user's ID
     with get_db_connection() as conn:
-        # Fetch schedules specific to the logged-in employee
+        # Query schedules for the logged-in user
         schedules = conn.execute('''
-            SELECT schedules.id, schedules.date, schedules.start_time, schedules.end_time, schedules.task,
-                employees.name AS employee_name, employees.position AS employee_position,
-                employees.department AS employee_department
+            SELECT schedules.id, schedules.date, schedules.start_time, schedules.end_time, schedules.task, 
+                employees.name AS employee_name, employees.position AS employee_position, employees.department AS employee_department
             FROM schedules
             JOIN employees ON schedules.employee_id = employees.id
-            WHERE employees.id = ?
+            JOIN users ON employees.id = users.id
+            WHERE users.id = ?
         ''', (user_id,)).fetchall()
 
-        # Convert rows to dictionaries for easier JSON serialization
-        schedules = [dict(schedule) for schedule in schedules]
-
-    return render_template('employee_dashboard.html', schedules=schedules)
+    schedule_list = [dict(row) for row in schedules]  # Convert rows to dictionaries for JSON serialization
+    return render_template('employee_dashboard.html', schedules=schedule_list)
 
 @app.route('/logout')
 def logout():
